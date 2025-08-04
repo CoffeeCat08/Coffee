@@ -1,21 +1,29 @@
-import std/asynchttpserver
-import std/asyncdispatch
+# server.nim - デフォルト対応版
+import std/[asynchttpserver, asyncdispatch]
+import nimWebRecipes
 
-proc main {.async.}=
+# 修正1: 間接呼び出しを避けるため、直接分岐する
+proc mainHandler(req: Request) {.async.} =
+  echo $req.reqMethod & " " & req.url.path
+  
+  # 修正2: 間接呼び出しではなく、直接的な分岐
+  case req.url.path
+  of "/":
+    await indexHandler(req)
+  of "/about":
+    await aboutHandler(req)
+  else:
+    await req.respond(Http404, "<h1>404 Not Found</h1>")
+
+proc main() {.async.} =
   var server = newAsyncHttpServer()
-  proc cb(req:Request) {.async.} = 
-    echo (req.reqMethod, req.url, req.headers)
-    let headers = {"Content-type":"text/plain; charset = utf-8"}
-    await req.respond(Http200,"Hello World",headers.newHttpHeaders())
+  let port = Port(8080)
+  
+  echo "Server starting on http://localhost:8080"
+  echo "Available routes: /, /about"
+  
+  # 修正3: serve()を使用してシンプルに
+  await server.serve(port, mainHandler)
 
-  server.listen(Port(8080))
-  let port = server.getPort
-  echo "test this with: curl localhost:" & $port.uint16 & "/"
-
-  while true:
-    if server.shouldAcceptRequest():
-      await server.acceptRequest(cb)
-    else:
-      await sleepAsync(500)
-
-waitFor main()
+when isMainModule:
+  waitFor main()
