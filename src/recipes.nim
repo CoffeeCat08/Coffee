@@ -1,7 +1,9 @@
-# nimWebRecipes.nim
+# recipes.nim
 
 import std/asynchttpserver
 import std/asyncdispatch
+
+# ここで、アクセスしたページで何をさせるのか等の情報を打ち込むページ
 
 proc cb*(req:Request) {.async.} = 
   echo (req.reqMethod, req.url, req.headers)

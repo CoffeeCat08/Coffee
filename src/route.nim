@@ -1,6 +1,8 @@
-# routeTable.nim  
+# src/route.nim  
 import std/[asynchttpserver, asyncdispatch]
-import nimWebRecipes
+import recipes
+
+# 使用するurlの取り決めを行うところ
 
 proc myRoutes*(req: Request) {.async.} =
   case req.url.path
@@ -8,5 +10,7 @@ proc myRoutes*(req: Request) {.async.} =
     await indexHandler(req)
   of "/about": 
     await aboutHandler(req)
+  of "/hello":
+    await cb(req)
   else:
     await req.respond(Http404, "<h1>404 Not Found</h1>")
