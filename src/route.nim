@@ -5,6 +5,9 @@ import recipes
 # 使用するurlの取り決めを行うところ
 
 proc myRoutes*(req: Request) {.async.} =
+  
+
+
   case req.url.path
   of "/":
     await indexHandler(req)

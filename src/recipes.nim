@@ -2,8 +2,21 @@
 
 import std/asynchttpserver
 import std/asyncdispatch
-
+import os
+import nimja/parser
 # ここで、アクセスしたページで何をさせるのか等の情報を打ち込むページ
+
+# TODO: renderTemplateを考える。Nimjaは、動的な置換えに弱すぎる。
+# これなら、自作したほうが速いんじゃないかと思うほど。
+# 別のテンプレートエンジンを考えるべきだ。
+
+
+proc renderIndex(title: string, name: string): string =
+  compileTemplateFile("../template/index.nimja", baseDir = getScriptDir())
+
+proc renderAbout(title: string, name: string,age:int): string =
+  compileTemplateFile("../template/index.nimja", baseDir = getScriptDir())
+
 
 proc cb*(req:Request) {.async.} = 
   echo (req.reqMethod, req.url, req.headers)
@@ -11,7 +24,8 @@ proc cb*(req:Request) {.async.} =
   await req.respond(Http200,"Hello World",headers.newHttpHeaders())
 
 proc indexHandler*(req:Request){.async.}=
-  await req.respond(Http200,"<h1>Hello,Nim!</h1>")
+  await req.respond(Http200,renderIndex("CoffeCat", "piyopiyo"))
   
 proc aboutHandler*(req:Request){.async.}=
-  await req.respond(Http200,"<h1>This is the about page.</h1>")
+  await req.respond(Http200,renderAbout("CoffeCat", "piyopiyo", 20))
+
