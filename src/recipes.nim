@@ -24,8 +24,11 @@ proc cb*(req:Request) {.async.} =
   await req.respond(Http200,"Hello World",headers.newHttpHeaders())
 
 proc indexHandler*(req:Request){.async.}=
-  await req.respond(Http200,renderIndex("CoffeCat", "piyopiyo"))
+  await req.respond(Http200,renderIndex("CoffeeCat", "piyopiyo"))
   
 proc aboutHandler*(req:Request){.async.}=
-  await req.respond(Http200,renderAbout("CoffeCat", "piyopiyo", 20))
+  await req.respond(Http200,renderAbout("CoffeeCat", "piyopiyo", 20))
 
+proc userHandler*(req:Request,userId:string){.async.}=
+  let body = "<h1>User ID: " & userId & "</h1>"
+  await req.respond(Http200,body)
