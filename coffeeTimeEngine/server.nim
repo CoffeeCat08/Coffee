@@ -4,6 +4,8 @@ import router
 import ../src/urls
 
 proc main() {.async.} =
+
+  # ルーターの初期化(値は参照渡し)
   let router = newRouter()
   setUpRoutes(router)
 
